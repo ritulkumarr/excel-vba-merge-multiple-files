@@ -1,115 +1,49 @@
 # Excel VBA: Merge Multiple Excel Files (All Sheets)
 
-This VBA macro allows you to select multiple Excel files and merge all worksheets from those files into a single new workbook.
-
-Each worksheet is copied as a separate sheet (no data appending), and duplicate sheet names are handled automatically.
+A simple Excel tool to merge multiple Excel files into one workbook — keeping each worksheet separate (no data appending).
 
 ---
 
 ## 🚀 Features
 
-- Select multiple Excel files via file picker
-- Merge **all worksheets** from each file
-- Keeps sheets separate (no data consolidation)
-- Handles duplicate sheet names automatically
-- Removes default blank sheets
-- Saves merged file in the same folder as source files
-- Auto-generates file name with timestamp
-
----
-
-## 📌 How to Use
-- Open Excel
-- Press ALT + F11 to open VBA Editor
-- Insert → Module
-- Paste the code
-- Run Merge_Multiple_Excel_Files_All_Sheets_SaveSameFolder
 - Select multiple Excel files
-- Output file will be saved in the same folder
+- Imports all worksheets automatically
+- Keeps sheets separate (no data mixing)
+- Handles duplicate sheet names
+- Saves merged file in same folder
+- Auto file name with timestamp
 
 ---
 
-## 🧾 VBA Code
+## 📥 Download & Use
 
-```vba
-Sub Merge_Multiple_Excel_Files_All_Sheets_SaveSameFolder()
+1. Download the Excel file from this repository  
+2. Right-click the file → **Properties** → Check **Unblock** → Apply  
+3. Open the file and click **Enable Content**  
+4. Click the **Run/Merge button**  
+5. Select your Excel files  
 
-    Dim fd As FileDialog
-    Dim SelectedFile As Variant
-    Dim SourceWB As Workbook
-    Dim TargetWB As Workbook
-    Dim ws As Worksheet
-    Dim SheetName As String
-    Dim SavePath As String
-    Dim FileName As String
-    Dim i As Long
+✅ Your merged file will be created automatically in the same folder
 
-    Application.ScreenUpdating = False
-    Application.DisplayAlerts = False
+---
 
-    'Create merged workbook
-    Set TargetWB = Workbooks.Add
+## ⚠️ Notes
 
-    'File picker
-    Set fd = Application.FileDialog(msoFileDialogFilePicker)
-    With fd
-        .Title = "Select Excel Files to Merge"
-        .AllowMultiSelect = True
-        .Filters.Clear
-        .Filters.Add "Excel Files", "*.xls; *.xlsx; *.xlsm"
+- No manual copy-paste required  
+- Original files remain unchanged  
+- Works with `.xls`, `.xlsx`, `.xlsm`  
 
-        If .Show <> -1 Then Exit Sub
-    End With
+---
 
-    'Get folder path from first selected file
-    SavePath = Left(fd.SelectedItems(1), InStrRev(fd.SelectedItems(1), "\"))
+## 💡 Use Case
 
-    'Loop through selected files
-    For Each SelectedFile In fd.SelectedItems
+Perfect for:
+- Monthly reporting
+- Finance data consolidation
+- Operations data merging
 
-        Set SourceWB = Workbooks.Open(SelectedFile, ReadOnly:=True)
+---
 
-        For Each ws In SourceWB.Worksheets
+## 📄 License
 
-            ws.Copy After:=TargetWB.Sheets(TargetWB.Sheets.Count)
-
-            'Handle duplicate sheet names
-            SheetName = ws.Name
-            i = 1
-            Do While SheetExists(SheetName, TargetWB)
-                SheetName = ws.Name & "_" & i
-                i = i + 1
-            Loop
-            TargetWB.Sheets(TargetWB.Sheets.Count).Name = SheetName
-
-        Next ws
-
-        SourceWB.Close False
-
-    Next SelectedFile
-
-    'Remove default blank sheets
-    Do While TargetWB.Sheets.Count > 1 And _
-             TargetWB.Sheets(1).UsedRange.Count = 1
-        TargetWB.Sheets(1).Delete
-    Loop
-
-    'Generate file name with timestamp
-    FileName = "Merged_File_" & Format(Now, "yyyymmdd_hhmmss") & ".xlsx"
-
-    'Save merged workbook in same folder
-    TargetWB.SaveAs FileName:=SavePath & FileName, _
-                    FileFormat:=xlOpenXMLWorkbook
-
-    Application.ScreenUpdating = True
-    Application.DisplayAlerts = True
-
-    MsgBox "Merged file saved at:" & vbCrLf & SavePath & FileName, vbInformation
-
-End Sub
-
-Function SheetExists(SheetName As String, wb As Workbook) As Boolean
-    On Error Resume Next
-    SheetExists = Not wb.Sheets(SheetName) Is Nothing
-    On Error GoTo 0
-End Function
+MIT License
