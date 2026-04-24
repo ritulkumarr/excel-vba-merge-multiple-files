@@ -18,6 +18,17 @@ Each worksheet is copied as a separate sheet (no data appending), and duplicate 
 
 ---
 
+## 📌 How to Use
+Open Excel
+Press ALT + F11 to open VBA Editor
+Insert → Module
+Paste the code
+Run Merge_Multiple_Excel_Files_All_Sheets_SaveSameFolder
+Select multiple Excel files
+Output file will be saved in the same folder
+
+---
+
 ## 🧾 VBA Code
 
 ```vba
